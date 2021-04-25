@@ -3,6 +3,8 @@ from time import sleep
 from itertools import permutations
 import string 
 
+#for windows OS
+
 print('digite o nome da rede wifi :')
 nome = input()
 
@@ -18,7 +20,7 @@ def testar(senha) :
     else:
         print("{} não é a senha".format(senha))
 
-caracteres = string.printable()
+caracteres = string.printable
 for x in range(8,len(caracteres)+1) :
     for y in permutations(caracteres,x) :
         testar(str(y).encode('utf-8'))
